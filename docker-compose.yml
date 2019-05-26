@@ -1,0 +1,24 @@
+version: "2"
+services:
+  rabbitmq:
+    restart: always
+    container_name: ecommerce-order-rabbitmq
+    image: rabbitmq:3-management
+    networks:
+      - ecommerce-order-net
+    environment:
+      - "RABBITMQ_DEFAULT_USER=rabbitmq-user"
+      - "RABBITMQ_DEFAULT_PASS=rabbitmq-password"
+    volumes:
+      - ecommerce-order-rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+networks:
+  ecommerce-order-net:
+    driver: bridge
+
+volumes:
+  ecommerce-order-rabbitmq-data:
+    driver: local
