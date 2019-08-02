@@ -12,6 +12,8 @@ Ecommerce项目包括：
 |common|共享依赖包|[https://github.com/e-commerce-sample/common](https://github.com/e-commerce-sample/common)|
 |devops|基础设施|[https://github.com/e-commerce-sample/devops](https://github.com/e-commerce-sample/devops)|
 
+# 技术选型
+Spring Boot、Gradle、MySQL、Junit 5、Rest Assured、Docker、RabbitMQ
 
 # 本地构建
 |功能|命令|备注|
