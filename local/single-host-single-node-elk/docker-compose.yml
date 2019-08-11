@@ -1,0 +1,88 @@
+version: "2"
+services:
+  elasticsearch:
+    restart: always
+    container_name: single-node-elk-es
+    image: single-node-elk-es:latest
+    build:
+      context: elasticsearch
+      dockerfile: Dockerfile
+    networks:
+      - single-node-elk-net
+    environment:
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+    ports:
+      - 9201:9200
+      - 9301:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 10g
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - single-node-elk-data:/usr/share/elasticsearch/data
+
+  logstash:
+    restart: always
+    container_name: single-node-elk-logstash
+    image: single-node-elk-logstash:latest
+    build:
+      context: logstash
+      dockerfile: Dockerfile
+    networks:
+      - single-node-elk-net
+    ports:
+      - "12202:12201/udp"
+    depends_on:
+      - elasticsearch
+    environment:
+      LS_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+
+  kibana:
+    restart: always
+    container_name: single-node-elk-kibana
+    image: single-node-elk-kibana:latest
+    build:
+      context: kibana
+      dockerfile: Dockerfile
+    networks:
+      - single-node-elk-net
+    ports:
+      - "5602:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      TZ: "Asia/Shanghai"
+
+  redis:
+    restart: always
+    container_name: single-node-elk-redis
+    image: single-node-elk-redis:latest
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    networks:
+      - single-node-elk-net
+    ports:
+      - "6380:6379"
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - redis-data:/data
+
+networks:
+  single-node-elk-net:
+    driver: bridge
+
+volumes:
+  single-node-elk-data:
+    driver: local
+  redis-data:
+    driver: local

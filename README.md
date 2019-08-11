@@ -13,11 +13,8 @@ Ecommerce项目包括：
 |devops|基础设施|[https://github.com/e-commerce-sample/devops](https://github.com/e-commerce-sample/devops)|
 
 # 技术选型
-Spring Boot、Gradle、MySQL、Junit 5、Rest Assured、Docker、RabbitMQ
+Spring Boot、Gradle、MySQL、Junit 5、Rest Assured、Docker、RabbitMQ、Ansible
 
-# 本地构建
-|功能|命令|备注|
-| --- | --- | --- |
-|启动RabbitMQ|`./start-rabbitmq.sh`|RabbitMQ访问：[http://localhost:15672/](http://localhost:15672/)|
-|停止RabbitMQ|`./stop-rabbitmq.sh`|将清空所有network和volume|
-
+# 目录结构
+- local主要包含本地开发过程所需要用到的基础设施，比如RabbitMQ和ELK等，均通过Docker在本地机器启动
+- remote主要用于生产环境所需的基础设施，主要针对"虚拟机+Docker"的部署场景，使用Vagrant生产环境模拟虚拟机
