@@ -1,0 +1,117 @@
+version: "2"
+services:
+  es1:
+    restart: always
+    container_name: local-es-cluster-1
+    image: local-es-cluster:latest
+    build:
+      context: elasticsearch
+      dockerfile: Dockerfile
+    networks:
+      - local-elk-net
+    environment:
+      node.name: es1
+      discovery.seed_hosts: es2
+      cluster.initial_master_nodes: es1,es2
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+    ports:
+      - 9202:9200
+      - 9302:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 10g
+    volumes:
+      - local-es-cluster-1-data:/usr/share/elasticsearch/data
+
+  es2:
+    restart: always
+    container_name: local-es-cluster-2
+    image: local-es-cluster:latest
+    build:
+      context: elasticsearch
+      dockerfile: Dockerfile
+    networks:
+      - local-elk-net
+    environment:
+      node.name: es2
+      discovery.seed_hosts: es1
+      cluster.initial_master_nodes: es1,es2
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 10g
+    volumes:
+      - local-es-cluster-2-data:/usr/share/elasticsearch/data
+
+  logstash:
+    restart: always
+    container_name: local-elk-logstash
+    image: local-elk-logstash:latest
+    build:
+      context: logstash
+      dockerfile: Dockerfile
+    networks:
+      - local-elk-net
+    ports:
+      - "12203:12201/udp"
+    depends_on:
+      - es1
+    environment:
+      LS_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+
+  kibana:
+    restart: always
+    container_name: local-elk-kibana
+    image: local-elk-kibana:latest
+    build:
+      context: kibana
+      dockerfile: Dockerfile
+    networks:
+      - local-elk-net
+    ports:
+      - "5603:5601"
+    depends_on:
+      - es1
+    environment:
+      TZ: "Asia/Shanghai"
+
+  redis:
+    restart: always
+    container_name: local-elk-redis
+    image: local-elk-redis:latest
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    networks:
+      - local-elk-net
+    ports:
+      - "6381:6379"
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - redis-data:/data
+
+networks:
+  local-elk-net:
+    driver: bridge
+
+volumes:
+  local-es-cluster-1-data:
+    driver: local
+  local-es-cluster-2-data:
+    driver: local
+  redis-data:
+    driver: local

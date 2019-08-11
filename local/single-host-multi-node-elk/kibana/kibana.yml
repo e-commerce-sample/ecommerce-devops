@@ -1,0 +1,4 @@
+---
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: ["http://es1:9200","http://es2:9200"]

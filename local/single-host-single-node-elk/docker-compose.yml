@@ -23,8 +23,6 @@ services:
         soft: 65536
         hard: 65536
     mem_limit: 10g
-    cap_add:
-      - IPC_LOCK
     volumes:
       - single-node-elk-data:/usr/share/elasticsearch/data
 
