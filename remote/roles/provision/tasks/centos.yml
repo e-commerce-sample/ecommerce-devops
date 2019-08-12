@@ -1,28 +1,42 @@
 ---
-- name: Disable SELinux
-  selinux:
-    policy: targeted
-    state: disabled
-  notify:
-    - Reboot system
+- name: Add aliyun centos repository
+  yum_repository:
+    name: aliyun-centos
+    description: Aliyun centos repo
+    baseurl: http://mirrors.aliyun.com/centos/$releasever/os/$basearch/
+    gpgcheck: no
 
-- name: Add Docker repo
-  get_url:
-    url: https://download.docker.com/linux/centos/docker-ce.repo
-    dest: /etc/yum.repos.d/docer-ce.repo
-  become: yes
+- name: Add aliyun centos update repository
+  yum_repository:
+    name: aliyun-centos-updates
+    description: Aliyun centos updates repo
+    baseurl: http://mirrors.aliyun.com/centos/$releasever/updates/$basearch/
+    gpgcheck: no
+
+- name: Add aliyun epel repository
+  yum_repository:
+    name: aliyun-epel
+    description: Aliyun epel repo
+    baseurl: http://mirrors.aliyun.com/epel/$releasever/$basearch
+    gpgcheck: no
+
+- name: Add aliyun docker-ce repository
+  yum_repository:
+    name: aliyun-docker-ce
+    description: Aliyun docker-ce repo
+    baseurl: https://mirrors.aliyun.com/docker-ce/linux/centos/$releasever/$basearch/stable
+    gpgcheck: no
 
 
-- name: Install epel-release
-  yum:
-    name: epel-release
-    state: present
+- name: Clean yum repo
+  file:
+    path: /var/cache/yum
+    state: absent
 
-#
-#- name: Clean yum repo
-#  file:
-#    path: /var/cache/yum
-#    state: absent
+- name: clean
+  shell: yum clean all
+  args:
+    warn: false
 
 - name: Update all packages
   yum:

@@ -3,28 +3,29 @@
   hosts: es1
   become: yes
   roles:
-    - elasticsearch
+    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
   tags:
     - es
-    - es1
+    - "{{ inventory_hostname }}"
 
 - name: Deploy Elasticsearch node2
   hosts: es2
   become: yes
   roles:
-    - elasticsearch
+    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
   tags:
     - es
-    - es2
+    - "{{ inventory_hostname }}"
+
 
 - name: Deploy Elasticsearch node3
   hosts: es3
   become: yes
   roles:
-    - elasticsearch
+    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
   tags:
     - es
-    - es3
+    - "{{ inventory_hostname }}"
 
 
 - name: Deploy Kibana

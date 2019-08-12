@@ -1,0 +1,35 @@
+---
+- name: Set vm.max_map_count for ES production #otherwise error in es: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+  sysctl: name={{ item.key }} value={{ item.value }}
+  with_items:
+    - { key: "vm.max_map_count", value: "262144" }
+
+
+- name: Stop and remove previous ES container
+  docker_container:
+    name: "{{ inventory_hostname }}"
+    state: absent
+
+- name: Start the new ES container
+  docker_container:
+    name: "{{ inventory_hostname }}"
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    state: started
+    restart: yes
+    network_mode: host #otherwise: landrush dns not working from docker
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+    env:
+      cluster.name: remote-es-cluster
+      network.host: 0.0.0.0
+      bootstrap.memory_lock: "true"
+      node.name: "{{ inventory_hostname }}"
+      discovery.seed_hosts: "es1.vagrant.local,es2.vagrant.local,es3.vagrant.local"
+      cluster.initial_master_nodes: "es1.vagrant.local,es2.vagrant.local,es3.vagrant.local"
+      network.publish_host: "{{ ansible_ssh_host }}"
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      TZ: "Asia/Shanghai"
+    ulimits:
+      - nofile:65535:65535 # otherwise error in es: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]
+      - memlock:-1:-1 #otherwise error in es: memory locking requested for elasticsearch process but memory is not locked
