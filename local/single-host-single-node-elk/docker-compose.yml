@@ -10,7 +10,7 @@ services:
     networks:
       - single-node-elk-net
     environment:
-      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      ES_JAVA_OPTS: "-Xms4096m -Xmx4096m"
       TZ: "Asia/Shanghai"
     ports:
       - 9201:9200
@@ -40,7 +40,7 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      LS_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      LS_JAVA_OPTS: "-Xms4096m -Xmx4096m"
       TZ: "Asia/Shanghai"
 
   kibana:

@@ -1,0 +1,48 @@
+tld="vagrant.local"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/7"
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/my_id_rsa.pub"
+  config.vm.provision "shell", inline: "cat ~/.ssh/my_id_rsa.pub >> ~/.ssh/authorized_keys", privileged: false
+
+  config.landrush.enabled = true
+  config.landrush.tld = tld
+
+  (1..3).each do |i|
+  config.vm.define "es#{i}" do |node|
+    hostName="es#{i}."+tld
+    node.vm.hostname = hostName
+      node.vm.network "private_network", type: "dhcp"
+      node.vm.provider "virtualbox" do |v|
+        v.memory = 8192
+        v.cpus = 4
+        v.name = hostName
+      end
+    end
+  end
+
+
+  config.vm.define "kibana" do |node|
+      hostName="kibana."+tld
+      node.vm.hostname = hostName
+      node.vm.network "private_network", type: "dhcp"
+      node.vm.provider "virtualbox" do |v|
+          v.memory = 8192
+          v.cpus = 4
+          v.name = hostName
+      end
+  end
+
+  config.vm.define "logstash" do |node|
+      hostName="logstash."+tld
+      node.vm.hostname = hostName
+      node.vm.network "private_network", type: "dhcp"
+      node.vm.provider "virtualbox" do |v|
+          v.memory = 8192
+          v.cpus = 4
+          v.name = hostName
+      end
+  end
+
+
+end

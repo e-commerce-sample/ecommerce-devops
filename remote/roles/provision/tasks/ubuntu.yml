@@ -1,0 +1,159 @@
+---
+- name: Add aliyun main repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }} main
+
+- name: Add aliyun updates main repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }}-updates main
+
+- name: Add aliyun security main repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }}-security main
+
+- name: Add aliyun universe repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }} universe
+
+- name: Add aliyun updates universe repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }}-updates universe
+
+- name: Add aliyun security universe repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/ubuntu/ {{ ansible_distribution_release }}-security universe
+
+- name: Add docker-ce gpg key
+  apt_key:
+    url: http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg
+    state: present
+
+- name: Add aliyun docker-ce repository
+  apt_repository:
+    repo: deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu {{ ansible_distribution_release }} stable
+
+
+- name: Update apt repository cache
+  apt:
+    update_cache: yes
+
+- name: Remove old versions of docker if exists
+  apt:
+    name:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent
+
+- name: Install docker-ce dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - libltdl7
+    state: present
+
+- name: Install docker-ce
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+
+- name: Remove all prvious docker containers if exists
+  shell: docker ps -a -q | xargs -r docker rm -f
+  ignore_errors: true
+
+- name: Remove all prvious docker images except gocd/elk/nexus
+  shell: docker images | grep -v gocd | grep -v elastic | grep -v sonatype | grep -v IMAGE | tr -s ' ' | cut -d ' ' -f 3 | xargs -r docker rmi
+  ignore_errors: true
+
+- name: Prune everything for prvious docker
+  shell: docker system prune -f --volumes
+  ignore_errors: true
+
+- name: Stop docker
+  service:
+    name: docker
+    state: stopped
+  ignore_errors: yes
+
+
+- name: Clean docker data dir
+  file:
+    path: "{{ docker_data_dir }}"
+    state: absent
+  ignore_errors: yes
+
+- name: Make docker data dir
+  file:
+    path: "{{ docker_data_dir }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Upload docker-ce service file
+  template:
+    src: docker.service.j2
+    dest: /lib/systemd/system/docker.service
+
+- name: Reload systemctl daemon and start docker
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: Uninstall python-pip
+  apt:
+    name: python-pip
+    state: absent
+
+- name: Uninstall python3-pip
+  apt:
+    name: python3-pip
+    state: absent
+
+- name: Download get-pip.py
+  get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
+
+- name: Install pip for python 2
+  command: "python /tmp/get-pip.py"
+
+- name: Install pip for python 3
+  command: "python3 /tmp/get-pip.py"
+
+- name: Delete get-pip.py
+  file: state=absent path=/tmp/get-pip.py
+
+- name: Try remove docker-py and docker as they results in conflicts
+  raw: (pip uninstall -y docker-py docker ; ls) &> /dev/null
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: present
+
+#==================utils==================
+- name: Install rsync
+  apt:
+    name: rsync
+    state: present
+
+- name: Install bash-completion
+  apt:
+    name: bash-completion
+    state: present
+
+- name: Install passlib
+  pip:
+    name: passlib
+    state: present
+

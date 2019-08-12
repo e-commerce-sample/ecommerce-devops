@@ -1,0 +1,129 @@
+---
+- name: Disable SELinux
+  selinux:
+    policy: targeted
+    state: disabled
+  notify:
+    - Reboot system
+
+- name: Add Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+  become: yes
+
+
+- name: Install epel-release
+  yum:
+    name: epel-release
+    state: present
+
+#
+#- name: Clean yum repo
+#  file:
+#    path: /var/cache/yum
+#    state: absent
+
+- name: Update all packages
+  yum:
+    update_cache: yes
+    name: '*'
+    state: present
+
+- name: Remove old version of docker if exists
+  yum:
+    name:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-engine
+    state: absent
+
+
+- name: Install docker-ce dependencies
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+- name: Install docker-ce
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    disable_gpg_check: yes
+
+
+- name: Stop docker
+  service:
+    name: docker
+    state: stopped
+  ignore_errors: yes
+
+- name: Clean docker data dir
+  file:
+    path: "{{ docker_data_dir }}"
+    state: absent
+  ignore_errors: yes
+
+- name: Make docker data dir
+  file:
+    path: "{{ docker_data_dir }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Upload docker service file
+  template:
+    src: docker.service.j2
+    dest: /lib/systemd/system/docker.service
+
+
+- name: Reload systemctl daemon and start docker
+  systemd:
+    name: docker
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: Install python-pip
+  yum:
+    name: python-pip
+    state: present
+    update_cache: yes
+
+- name: Try remove docker-py and docker as they results in conflicts
+  raw: (pip uninstall -y docker-py docker ; ls) &> /dev/null
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: present
+
+#==================utils==================
+- name: Install rsync
+  yum:
+    name: rsync
+    state: present
+
+- name: Install bash-completion
+  yum:
+    name: bash-completion
+    state: present
+
+- name: Install passlib
+  pip:
+    name: passlib
+    state: present
+
+
+

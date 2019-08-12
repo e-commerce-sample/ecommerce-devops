@@ -1,0 +1,45 @@
+---
+- name: Set timezone to China Standard Time
+  timezone:
+    name: Asia/Shanghai
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Make sure we have a 'docker' group
+  group:
+    name: docker
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Make current user is in wheel group for sudo permission and sudoless docker
+  user:
+    name: "{{ ansible_user }}"
+    shell: /bin/bash
+    groups: docker,wheel
+    createhome: yes
+
+
+- include_tasks: centos.yml
+  when: ansible_distribution == "CentOS"
+
+- include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+
+#
+#- name: Login Neuxs repository
+#  docker_login:
+#    registry: "{{ docker_registry_host }}"
+#    username: "{{ docker_registry_user }}"
+#    password: "{{ docker_registry_password }}"
+#  when: inventory_hostname != "nexus"
+

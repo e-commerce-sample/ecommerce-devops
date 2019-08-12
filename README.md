@@ -16,10 +16,6 @@ Ecommerce项目包括：
 Spring Boot、Gradle、MySQL、Junit 5、Rest Assured、Docker、RabbitMQ、Ansible
 
 # 目录结构
-- local主要包含本地开发过程所需要用到的基础设施，比如RabbitMQ和ELK等，均通过Docker在本地机器启动
-- remote主要用于生产环境所需的基础设施，主要针对"虚拟机+Docker"的部署场景，使用Vagrant生产环境模拟虚拟机
+- local主要包含本地开发过程所需要用到的基础设施，比如RabbitMQ和ELK等，均通过Docker在本地机器启动。
+- remote主要用于生产环境所需的基础设施，主要针对"虚拟机+Docker"的部署场景，本地使用Vagrant虚拟机。
 
-
-# tmp
-
-discovery.zen.ping.unicast.hosts被discovery.seed_hosts取代
