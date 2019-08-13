@@ -7,16 +7,16 @@
 
 - name: Stop and remove previous ES container
   docker_container:
-    name: "{{ inventory_hostname }}"
+    name: elk-es
     state: absent
     keep_volumes: no
 
 - name: Start the new ES container
   docker_container:
-    name: "{{ inventory_hostname }}"
+    name: elk-es
     image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
     state: started
-    restart: yes
+    restart_policy: always
     ports:
       - "9200:9200"
       - "9300:9300"

@@ -1,0 +1,19 @@
+---
+  - name: Upload logstash docker-compose files
+    synchronize:
+      src: logstash-docker-compose-files
+      dest: /tmp
+      delete: yes
+      recursive: yes
+
+  - name: Stop existing Logstash
+    docker_service:
+      project_src: /tmp/logstash-docker-compose-files
+      state: absent
+      remove_volumes: "{{ force_remove_volumes }}"
+
+  - name: Start Logstash
+    docker_service:
+      project_src: /tmp/logstash-docker-compose-files
+      state: present
+      build: yes

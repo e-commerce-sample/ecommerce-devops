@@ -26,20 +26,19 @@
     - es
     - es3
 
-#
-#- name: Deploy Kibana
-#  hosts: kibana
-#  become: yes
-#  roles:
-#    - "{{ roleDir }}/kibana"
-#  tags:
-#    - kibana
-#
-#- name: Deploy Logstash
-#  hosts: logstash
-#  become: yes
-#  roles:
-#    - "{{ roleDir }}/logstash"
-#  tags:
-#    - logstash
 
+- name: Deploy Kibana
+  hosts: logstash
+  become: yes
+  roles:
+    - "{{ roleDir }}/kibana"
+  tags:
+    - kibana
+
+- name: Deploy Logstash
+  hosts: logstash
+  become: yes
+  roles:
+    - "{{ roleDir }}/logstash"
+  tags:
+    - logstash

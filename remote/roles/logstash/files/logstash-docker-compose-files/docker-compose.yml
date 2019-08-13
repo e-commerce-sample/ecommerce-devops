@@ -1,0 +1,39 @@
+version: "2"
+services:
+  logstash:
+    restart: always
+    container_name: elk-logstash
+    image: elk-logstash:latest
+    build:
+      context: logstash
+      dockerfile: Dockerfile
+    networks:
+      - logstash-net
+    ports:
+      - "12201:12201/udp"
+    environment:
+      LS_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      TZ: "Asia/Shanghai"
+      
+  redis:
+    restart: always
+    container_name: elk-redis
+    image: elk-redis:latest
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    networks:
+      - logstash-net
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: "Asia/Shanghai"
+    volumes:
+      - redis-data:/data
+networks:
+  logstash-net:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
