@@ -3,44 +3,43 @@
   hosts: es1
   become: yes
   roles:
-    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
+    - "{{ roleDir }}/elasticsearch"
   tags:
     - es
-    - "{{ inventory_hostname }}"
+    - es1
 
 - name: Deploy Elasticsearch node2
   hosts: es2
   become: yes
   roles:
-    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
+    - "{{ roleDir }}/elasticsearch"
   tags:
     - es
-    - "{{ inventory_hostname }}"
-
+    - es2
 
 - name: Deploy Elasticsearch node3
   hosts: es3
   become: yes
   roles:
-    - /Users/yteng/github/e-commerce-sample/devops/remote/roles/elasticsearch
+    - "{{ roleDir }}/elasticsearch"
   tags:
     - es
-    - "{{ inventory_hostname }}"
+    - es3
 
-
-- name: Deploy Kibana
-  hosts: kibana
-  become: yes
-  roles:
-    - kibana
-  tags:
-    - kibana
-
-- name: Deploy Logstash
-  hosts: logstash
-  become: yes
-  roles:
-    - logstash
-  tags:
-    - logstash
+#
+#- name: Deploy Kibana
+#  hosts: kibana
+#  become: yes
+#  roles:
+#    - "{{ roleDir }}/kibana"
+#  tags:
+#    - kibana
+#
+#- name: Deploy Logstash
+#  hosts: logstash
+#  become: yes
+#  roles:
+#    - "{{ roleDir }}/logstash"
+#  tags:
+#    - logstash
 

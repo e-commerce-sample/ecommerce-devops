@@ -10,8 +10,9 @@ services:
     networks:
       - single-node-elk-net
     environment:
-      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       TZ: "Asia/Shanghai"
+#      ELASTIC_PASSWORD: "my_own_password" # used with xpack.security.enabled
     ports:
       - 9201:9200
       - 9301:9300
@@ -40,7 +41,7 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      LS_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      LS_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       TZ: "Asia/Shanghai"
 
   kibana:

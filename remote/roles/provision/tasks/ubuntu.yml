@@ -124,9 +124,6 @@
 - name: Download get-pip.py
   get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
 
-- name: Install pip for python 2
-  command: "python /tmp/get-pip.py"
-
 - name: Install pip for python 3
   command: "python3 /tmp/get-pip.py"
 

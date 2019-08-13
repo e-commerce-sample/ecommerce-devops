@@ -28,7 +28,6 @@
     groups: docker,wheel
     createhome: yes
 
-
 - include_tasks: centos.yml
   when: ansible_distribution == "CentOS"
 

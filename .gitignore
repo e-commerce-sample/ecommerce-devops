@@ -16,3 +16,4 @@ dataSources/
 tmp.json
 *.retry
 .vagrant
+*.log

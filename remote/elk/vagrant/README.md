@@ -1,8 +1,8 @@
 ### Introduction
-- 5 nodes centos7 cluster with DHCP private network and DNS enabled
+- 5 nodes ubuntu1604 cluster with DHCP private network and DNS enabled
 - network: private(host and vm can access each other)
-- memory: 8096
-- cpu: 4
+- memory: 2048
+- cpu: 2
 - First step: install `landrush` vagrant plugin
 
 ``` bash

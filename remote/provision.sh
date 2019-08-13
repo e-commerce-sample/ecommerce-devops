@@ -7,4 +7,4 @@ if [ -z "$1" ]
 fi
 
 export ANSIBLE_HOST_KEY_CHECKING=false
-ansible-playbook -i inventory.ini -v provision-playbook.yml --extra-vars "host=$1"
+ansible-playbook -i inventory.ini -v provision-playbook.yml --extra-vars "host=$1" -v

@@ -13,7 +13,7 @@ services:
       node.name: es1
       discovery.seed_hosts: es2
       cluster.initial_master_nodes: es1,es2
-      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       TZ: "Asia/Shanghai"
     ports:
       - 9202:9200
@@ -42,7 +42,7 @@ services:
       node.name: es2
       discovery.seed_hosts: es1
       cluster.initial_master_nodes: es1,es2
-      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       TZ: "Asia/Shanghai"
     ulimits:
       memlock:
@@ -69,7 +69,7 @@ services:
     depends_on:
       - es1
     environment:
-      LS_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      LS_JAVA_OPTS: "-Xms1024m -Xmx1024m"
       TZ: "Asia/Shanghai"
 
   kibana:
