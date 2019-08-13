@@ -28,7 +28,7 @@
 
 
 - name: Deploy Kibana
-  hosts: logstash
+  hosts: kibana
   become: yes
   roles:
     - "{{ roleDir }}/kibana"

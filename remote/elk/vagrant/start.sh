@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+vagrant landrush stop
 vagrant destroy -f
 
 vagrant up
