@@ -66,18 +66,6 @@
       - containerd.io
     state: present
 
-- name: Remove all prvious docker containers if exists
-  shell: docker ps -a -q | xargs -r docker rm -f
-  ignore_errors: true
-
-- name: Remove all prvious docker images except gocd/elk/nexus
-  shell: docker images | grep -v gocd | grep -v elastic | grep -v sonatype | grep -v IMAGE | tr -s ' ' | cut -d ' ' -f 3 | xargs -r docker rmi
-  ignore_errors: true
-
-- name: Prune everything for prvious docker
-  shell: docker system prune -f --volumes
-  ignore_errors: true
-
 - name: Stop docker
   service:
     name: docker
