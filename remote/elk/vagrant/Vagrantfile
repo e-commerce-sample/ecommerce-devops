@@ -1,7 +1,7 @@
 tld="vagrant.local"
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "davenkin/ubuntu1604"
   config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/my_id_rsa.pub"
   config.vm.provision "shell", inline: "cat ~/.ssh/my_id_rsa.pub >> ~/.ssh/authorized_keys", privileged: false
 
