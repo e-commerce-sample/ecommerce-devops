@@ -2,7 +2,7 @@
 - 本地启动整个ELK：`./start.sh`
 - 启动之后检查ES集群状态：`curl http://localhost:9201/_cluster/health?pretty`
 - 查看节点情况：`curl http://localhost:9201/_cat/nodes?v`
-- 启动之后可以访问Kibana：[http://localhsot:5602](http://localhsot:5602)
+- 启动之后可以访问Kibana：[http://localhost:5602](http://localhost:5602)
 - 首次启动Kibana需要创建Index(需要ES中有Index数据之后才行)，Logstash默认的Index为`logstash-*`格式。
 - 关闭ELK： `./stop.sh`，将清空所有数据
 - 用2种方式打日志：通过gelf和通过redis
@@ -10,7 +10,7 @@
 
 
 ## redis日志测试
-- 保证[http://localhsot:5602](http://localhsot:5602)可以正常访问
+- 保证[http://localhost:5602](http://localhost:5602)可以正常访问
 - 登录Redis： `redis-cli -h localhost -p 6380 -a changeme`
 - 在Redis中随便打点内容(需要json格式)：`lpush redis-log '{"msg":"hello world"}'`
 - 在Kibana上创建名为`logstash-*`的Index
@@ -49,5 +49,5 @@ elasticsearch.username: "kibana"
 elasticsearch.password: "password-for `kibana` user"
 ```
 
-- 访问Kibana：[http://localhsot:5602](http://localhsot:5602)
+- 访问Kibana：[http://localhost:5602](http://localhost:5602)
 - 用设置的账户登录
